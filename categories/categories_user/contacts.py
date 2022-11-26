@@ -24,5 +24,4 @@ class ContactsUser(Contacts):
                                                f'{contact["job"]}\n'
                                                f'{contact["email"]}')
 
-        await self.back_user(message, state)
 

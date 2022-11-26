@@ -20,4 +20,3 @@ class LearningUser(Learning):
         if url:
             await message.answer(text=url)
 
-        await self.back_user(message, state)

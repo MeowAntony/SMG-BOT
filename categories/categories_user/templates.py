@@ -23,6 +23,7 @@ class TemplatesUser(Templates):
             media_group.attach_document(document)
 
         await message.answer_media_group(media_group)
-        await message.answer(text)
+        if text is not None:
+            await message.answer(text)
 
 

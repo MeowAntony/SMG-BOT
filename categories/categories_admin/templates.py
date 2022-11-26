@@ -110,9 +110,7 @@ class TemplatesAdmin(Templates):
             media_group.attach_document(document)
 
         await message.answer_media_group(media_group)
-
-        if data['text'] is not None:
-            await message.answer(text=data['text'])
+        await message.answer(text=data['text'])
 
         keyboard = keyboards_general.confirm_cancel_keyboard()
         await message.answer('Вы действительно хотите создать данный шаблон?', reply_markup=keyboard)

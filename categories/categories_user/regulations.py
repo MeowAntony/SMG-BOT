@@ -14,7 +14,7 @@ class RegulationsUser(Regulations):
         self.user_states = RegulationsStatesUser
 
     async def event_user(self, message: types.Message, state: FSMContext):
-        path = await self.get_path(state) + message.text
+        path = await self.get_path(state) + [message.text]
 
         if not (data_db := await self.smg_bot.db.get_data(self.name_button, path)):
             return
@@ -33,7 +33,7 @@ class RegulationsUser(Regulations):
         user = message.from_user
         text = f'Пользователь {user.first_name} {user.last_name} (@{user.username}, id{user.id}) сообщил,' \
                f'что нормативный документ не актуален. \n\n' \
-               f'Путь до документа: "{self.name_button} -> {"->".join(path)}"'
+               f'Путь до документа: "{self.name_button} -> {" -> ".join(path)}"'
         await self.smg_bot.bot.send_message(config.MAIN_ADMIN, text=text)
 
         keyboard = keyboards_user.regulations_answer(is_not_actually=False)
