@@ -3,6 +3,7 @@ from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import Text
 from aiogram.types import ContentType
 
+import dictionary
 from categories.categories import Regulations
 from keyboards import keyboards_general
 from states.states_admin import RegulationsStatesAdmin
@@ -61,7 +62,7 @@ class RegulationsAdmin(Regulations):
         await message.answer(f'Название: {data["name"]}')
         await message.answer_document(data['document'])
 
-        keyboard = keyboards_general.confirm_keyboard()
+        keyboard = keyboards_general.confirm_cancel_keyboard()
         await message.answer('Вы действительно хотите создать данный нормативный документ?', reply_markup=keyboard)
 
     async def create_confirm_admin(self, message: types.Message, state: FSMContext):
@@ -81,5 +82,5 @@ class RegulationsAdmin(Regulations):
                                     state=self.admins_states.CreateName)
         dp.register_message_handler(self.create_document_admin, content_types=ContentType.DOCUMENT,
                                     state=self.admins_states.CreateDocument)
-        dp.register_message_handler(self.create_confirm_admin, Text('Подтвердить'),
+        dp.register_message_handler(self.create_confirm_admin, Text(dictionary.CONFIRM),
                                     state=self.admins_states.CreateConfirm)

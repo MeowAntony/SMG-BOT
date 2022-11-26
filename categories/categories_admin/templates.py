@@ -78,7 +78,7 @@ class TemplatesAdmin(Templates):
                 await state.set_state(self.admins_states.CreateText)
                 keyboard = keyboards_general.skip_cancel_keyboard()
 
-                await message.answer('Введите текст (можно пропустить)', reply_markup=keyboard)
+                await message.answer('Введите текст или пропустите', reply_markup=keyboard)
                 return
 
         if len(documents) == MAX_DOCUMENTS:
@@ -114,7 +114,7 @@ class TemplatesAdmin(Templates):
         if data['text'] is not None:
             await message.answer(text=data['text'])
 
-        keyboard = keyboards_general.confirm_keyboard()
+        keyboard = keyboards_general.confirm_cancel_keyboard()
         await message.answer('Вы действительно хотите создать данный шаблон?', reply_markup=keyboard)
 
     async def create_confirm_admin(self, message: types.Message, state: FSMContext):

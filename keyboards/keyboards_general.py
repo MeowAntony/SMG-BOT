@@ -8,7 +8,7 @@ import dictionary
 def cancel_keyboard():
     keyboard = ReplyKeyboardMarkup(resize_keyboard=True)
 
-    keyboard.add(KeyboardButton('Отмена'))
+    keyboard.add(KeyboardButton(dictionary.CANCEL))
 
     return keyboard
 
@@ -16,7 +16,7 @@ def cancel_keyboard():
 def back_keyboard():
     keyboard = ReplyKeyboardMarkup(resize_keyboard=True)
 
-    keyboard.add(KeyboardButton('Назад'))
+    keyboard.add(KeyboardButton(dictionary.BACK))
 
     return keyboard
 
@@ -28,16 +28,17 @@ def return_keyboard(path=None) -> ReplyKeyboardMarkup:
     keyboard = ReplyKeyboardMarkup(resize_keyboard=True)
 
     if len(path) == 0:
-        keyboard.add(KeyboardButton('Главное меню'))
+        keyboard.add(KeyboardButton(dictionary.MAIN_MENU))
     else:
-        keyboard.row(KeyboardButton('Главное меню'), KeyboardButton('Назад'))
+        keyboard.row(KeyboardButton(dictionary.MAIN_MENU), KeyboardButton(dictionary.BACK))
 
     return keyboard
 
 
-def confirm_keyboard():
+def confirm_cancel_keyboard():
     keyboard = ReplyKeyboardMarkup(resize_keyboard=True)
-    keyboard.row(KeyboardButton('Подтвердить'), KeyboardButton('Отмена'))
+    keyboard.row(KeyboardButton(dictionary.CONFIRM),
+                 KeyboardButton(dictionary.CANCEL))
 
     return keyboard
 
@@ -45,7 +46,7 @@ def confirm_keyboard():
 def skip_cancel_keyboard():
     keyboard = ReplyKeyboardMarkup(resize_keyboard=True)
 
-    keyboard.row(KeyboardButton(dictionary.SKIP), KeyboardButton('Отмена'))
+    keyboard.row(KeyboardButton(dictionary.SKIP), KeyboardButton(dictionary.CANCEL))
 
     return keyboard
 
@@ -53,6 +54,6 @@ def skip_cancel_keyboard():
 def continue_cancel_keyboard():
     keyboard = ReplyKeyboardMarkup(resize_keyboard=True)
 
-    keyboard.row(KeyboardButton(dictionary.CONTINUE), KeyboardButton('Отмена'))
+    keyboard.row(KeyboardButton(dictionary.CONTINUE), KeyboardButton(dictionary.CANCEL))
 
     return keyboard

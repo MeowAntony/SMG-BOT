@@ -4,6 +4,7 @@ from aiogram import types, Dispatcher
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import Text
 
+import dictionary
 from categories.category_general import Category
 from keyboards import keyboards_user
 
@@ -24,7 +25,7 @@ class CategoryUser(Category):
         subcategory_next = message.text
 
         if subcategory_next not in await self.smg_bot.db.get_subcategories(self.name_button, path):
-            await message.answer('Такого подкаталога не существует')
+            await message.answer(dictionary.NO_SUBCATEGORY)
             return
 
         path.append(message.text)
@@ -57,7 +58,7 @@ class CategoryUser(Category):
             await state.update_data(category=self.name_button, path=path)
 
             keyboard = keyboards_user.subcategory_keyboard(subcategories, path)
-            text = self.msg_choice if await self.check_data_in_subcategories(path) else 'Выберите подкаталог'
+            text = self.msg_choice if await self.check_data_in_subcategories(path) else dictionary.CHOOSE_SUBCATEGORY
 
             await message.answer(text , reply_markup=keyboard)
 
@@ -68,10 +69,10 @@ class CategoryUser(Category):
         pass
 
     def register_user_events(self, dp: Dispatcher):
-        dp.register_message_handler(self.smg_bot.handler_user.main_menu, Text('Главное меню'),
+        dp.register_message_handler(self.smg_bot.handler_user.main_menu, Text(dictionary.MAIN_MENU),
                                     state=self.user_states)
-        dp.register_message_handler(self.back_user, Text('Назад'), state=self.user_states)
-        dp.register_message_handler(self.cancel_user, Text('Отмена'), state=self.user_states)
+        dp.register_message_handler(self.back_user, Text(dictionary.BACK), state=self.user_states)
+        dp.register_message_handler(self.cancel_user, Text(dictionary.CANCEL), state=self.user_states)
 
         dp.register_message_handler(self.select_category_user, Text(self.name_button),
                                     state=self.user_states.ChooseCategory)

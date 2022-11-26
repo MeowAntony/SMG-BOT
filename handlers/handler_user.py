@@ -4,6 +4,7 @@ from aiogram import Dispatcher, types
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import Text
 
+import dictionary
 from categories.category_admin import CategoryAdmin
 from categories.category_user import CategoryUser
 from dbmanager import DataBaseManager
@@ -22,7 +23,7 @@ class UserHandler:
 
         categories_names = self._categories.keys()
         keyboard = keyboards_user.categories_keyboard(categories_names)
-        await message.answer('Выберите каталог', reply_markup=keyboard)
+        await message.answer(dictionary.CHOOSE_CATEGORY, reply_markup=keyboard)
 
     def get_object_category(self, category_name: str):
         return self._categories.get(category_name, None)

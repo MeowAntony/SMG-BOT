@@ -34,7 +34,7 @@ class FeedbackUser(Feedback):
         await state.update_data(text=text)
         await state.set_state(self.user_states.SendConfirm.state)
 
-        keyboard = keyboards_general.confirm_keyboard()
+        keyboard = keyboards_general.confirm_cancel_keyboard()
         await message.answer(f'Вы действительно хотите отправить это сообщение:\n'
                              f'{text}', reply_markup=keyboard)
 

@@ -15,7 +15,6 @@ from categories.categories_user.about_bot import AboutBotUser
 from categories.categories_user.contacts import ContactsUser
 from categories.categories_user.faq import FAQUser
 from categories.categories_user.feedback import FeedbackUser
-from categories.categories_user.it_requests import ITRequestsUser
 from categories.categories_user.learning import LearningUser
 from categories.categories_user.logs_errors_victories import LogsErrorsVictoriesUser
 from categories.categories_user.regulations import RegulationsUser
@@ -97,7 +96,7 @@ class SMGBot:
         await dp.storage.close()
         await dp.storage.wait_closed()
 
-        self.server_email.close()
+        # self.server_email.close()
 
 
 if __name__ == '__main__':

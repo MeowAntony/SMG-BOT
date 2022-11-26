@@ -53,5 +53,5 @@ class Category:
     async def send_email_message(self, receiver, subject, message):
         msg = MIMEText(message)
         msg['Subject'] = subject
-        print(msg.as_string())
+
         self.smg_bot.server_email.sendmail(self.smg_bot.sender_email, receiver, msg.as_string())

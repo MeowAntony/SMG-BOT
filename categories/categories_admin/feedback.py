@@ -45,7 +45,7 @@ class FeedbackAdmin(Feedback):
         text = f'Вы действительно хотите изменить текущее информацию на эту: \n' \
                f'{data["info"]}'
 
-        keyboard = keyboards_general.confirm_keyboard()
+        keyboard = keyboards_general.confirm_cancel_keyboard()
         await message.answer(text, reply_markup=keyboard)
 
     async def edit_confirm_admin(self, message: types.Message, state: FSMContext):
@@ -58,7 +58,7 @@ class FeedbackAdmin(Feedback):
 
         await message.answer('Успешно изменена информация')
 
-        await self.cancel_admin(message, state, path)
+        await self.cancel_admin(message, state)
 
     def register_admin_events(self, dp: Dispatcher):
         super().register_admin_events(dp)

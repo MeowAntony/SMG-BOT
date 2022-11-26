@@ -59,10 +59,11 @@ class FAQAdmin(FAQ):
 
         data = await state.get_data()
 
-        await message.answer(f'Вопрос: {data["name"]}')
-        await message.answer(f'Ответ: {data["answer"]}')
+        text = f'Вопрос: {data["name"]} \n' \
+               f'Ответ: {data["answer"]}'
+        await message.answer(text)
 
-        keyboard = keyboards_general.confirm_keyboard()
+        keyboard = keyboards_general.confirm_cancel_keyboard()
         await message.answer('Вы действительно хотите создать данный вопрос?', reply_markup=keyboard)
 
     async def create_confirm_admin(self, message: types.Message, state: FSMContext):

@@ -3,6 +3,7 @@ from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import Text
 from aiogram.types import ContentType
 
+import dictionary
 from categories.categories import Contacts
 from keyboards import keyboards_general
 from states.states_admin import ContactsStatesAdmin
@@ -28,7 +29,8 @@ class ContactsAdmin(Contacts):
                                        caption=f'{fio}\n'
                                                f'{contact["job"]}\n'
                                                f'{contact["email"]}')
-
+    ############################################################################################
+    ############################################################################################
     async def create_object_admin(self, message: types.Message, state: FSMContext):
         path = await self.get_path(state)
 
@@ -83,7 +85,7 @@ class ContactsAdmin(Contacts):
                                            f'{contact["job"]}\n'
                                            f'{contact["email"]}')
 
-        keyboard = keyboards_general.confirm_keyboard()
+        keyboard = keyboards_general.confirm_cancel_keyboard()
         await message.answer('Вы действительно хотите создать данный контакт?', reply_markup=keyboard)
 
     async def create_confirm_admin(self, message: types.Message, state: FSMContext):
@@ -98,6 +100,9 @@ class ContactsAdmin(Contacts):
 
         await self.cancel_admin(message, state)
 
+    ############################################################################################
+    ############################################################################################
+
     def register_admin_events(self, dp: Dispatcher):
         super().register_admin_events(dp)
         dp.register_message_handler(self.create_fio_admin, content_types=ContentType.TEXT,
@@ -108,6 +113,6 @@ class ContactsAdmin(Contacts):
                                     state=self.admins_states.CreateEmail)
         dp.register_message_handler(self.create_photo_admin, content_types=ContentType.PHOTO,
                                     state=self.admins_states.CreatePhoto)
-        dp.register_message_handler(self.create_confirm_admin, Text('Подтвердить'),
+        dp.register_message_handler(self.create_confirm_admin, Text(dictionary.CONFIRM),
                                     state=self.admins_states.CreateConfirm)
 

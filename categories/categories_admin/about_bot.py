@@ -3,6 +3,7 @@ from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import Text
 from aiogram.types import ContentType
 
+import dictionary
 from categories.categories import AboutBot
 from keyboards import keyboards_general
 from states.states_admin import AboutBotStatesAdmin
@@ -27,7 +28,7 @@ class AboutBotAdmin(AboutBot):
 
     async def edit_object_admin(self, message: types.Message, state: FSMContext):
         await state.set_state(self.admins_states.EditDescription)
-        print(self.admins_states.EditDescription)
+
         keyboard = keyboards_general.cancel_keyboard()
         await message.answer('Напишите в одном сообщении новое описание Бота', reply_markup=keyboard)
 
@@ -39,7 +40,7 @@ class AboutBotAdmin(AboutBot):
 
         text = f'Вы действительно хотите изменить текущее описание Бота на это: \n' \
                f'{description}'
-        keyboard = keyboards_general.confirm_keyboard()
+        keyboard = keyboards_general.confirm_cancel_keyboard()
         await message.answer(text, reply_markup=keyboard)
 
     async def edit_confirm_admin(self, message: types.Message, state: FSMContext):
@@ -52,12 +53,12 @@ class AboutBotAdmin(AboutBot):
 
         await message.answer('Успешно изменено описание Бота')
 
-        await self.cancel_admin(message, state, path)
+        await self.cancel_admin(message, state)
 
     def register_admin_events(self, dp: Dispatcher):
         super().register_admin_events(dp)
 
         dp.register_message_handler(self.edit_description_admin, content_types=ContentType.TEXT,
                                     state=self.admins_states.EditDescription)
-        dp.register_message_handler(self.edit_confirm_admin, Text('Подтвердить'),
+        dp.register_message_handler(self.edit_confirm_admin, Text(dictionary.CONFIRM),
                                     state=self.admins_states.EditConfirm)

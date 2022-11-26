@@ -4,6 +4,7 @@ from aiogram import types, Dispatcher
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import Text
 
+import dictionary
 from categories.category_general import Category
 from keyboards import keyboards_admin
 
@@ -24,7 +25,7 @@ class CategoryAdmin(Category):
         subcategory_next = message.text
 
         if subcategory_next not in await self.smg_bot.db.get_subcategories(self.name_button, path):
-            await message.answer('Такого подкаталога не существует')
+            await message.answer(dictionary.NO_SUBCATEGORY)
             return
 
         path.append(message.text)
@@ -63,7 +64,7 @@ class CategoryAdmin(Category):
             elif self.subcategories_is_object:
                 if await self.check_data_in_subcategories(path):
                     keyboard = self.get_action_object_keyboard(path)
-                    keyboard = keyboards_admin.action_object_subcategories_keyboard(keyboard, subcategories)
+                    keyboard = keyboards_admin.with_subcategories_keyboard(keyboard, subcategories)
                 else:
                     keyboard = keyboards_admin.action_subcategory_keyboard(subcategories, path)
             else:
@@ -71,7 +72,7 @@ class CategoryAdmin(Category):
 
             await state.update_data(category=self.name_button, path=path)
 
-            await message.answer('Выберите действие', reply_markup=keyboard)
+            await message.answer(dictionary.CHOOSE_ACTION, reply_markup=keyboard)
         else:
             if not self.subcategories_is_object or not self.with_subcategories:
                 await state.update_data(category=self.name_button, path=path)
@@ -80,7 +81,7 @@ class CategoryAdmin(Category):
 
             if not self.subcategories_is_object or not self.with_subcategories:
                 keyboard = self.get_action_object_keyboard(path)
-                await message.answer('Выберите действие', reply_markup=keyboard)
+                await message.answer(dictionary.CHOOSE_ACTION, reply_markup=keyboard)
 
     async def event_admin(self, message: types.Message, state: FSMContext):
         pass
@@ -120,29 +121,29 @@ class CategoryAdmin(Category):
 
 
     async def edit_subcategory_admin(self, message: types.Message, state: FSMContext):
+        await self.smg_bot.handler_admin.edit_subcategory_admin(message, state)
         pass
 
     async def delete_subcategory_admin(self, message: types.Message, state: FSMContext):
+        await self.smg_bot.handler_admin.delete_subcategory_admin(message, state)
         pass
 
     def register_action_subcategories(self, dp: Dispatcher):
-        dp.register_message_handler(self.create_subcategory_admin, Text('Создать подкаталог'),
+        dp.register_message_handler(self.create_subcategory_admin, Text(dictionary.CREATE_SUBCATEGORY),
                                     state=self.admins_states.Chosen)
-
-
-        dp.register_message_handler(self.edit_object_admin, Text('Изменить подкаталог'),
+        dp.register_message_handler(self.edit_subcategory_admin, Text(dictionary.EDIT_SUBCATEGORY),
                                     state=self.admins_states.Chosen)
-        dp.register_message_handler(self.delete_subcategory_admin, Text('Удалить подкаталог'),
+        dp.register_message_handler(self.delete_subcategory_admin, Text(dictionary.DELETE_SUBCATEGORY),
                                     state=self.admins_states.Chosen)
 
     ##################################################################
     ##################################################################
     def register_admin_events(self, dp: Dispatcher):
-        dp.register_message_handler(self.smg_bot.handler_admin.main_menu, Text('Главное меню'),
+        dp.register_message_handler(self.smg_bot.handler_admin.main_menu, Text(dictionary.MAIN_MENU),
                                     state=self.admins_states)
-        dp.register_message_handler(self.back_admin, Text('Назад'), state=self.admins_states)
+        dp.register_message_handler(self.back_admin, Text(dictionary.BACK), state=self.admins_states)
 
-        dp.register_message_handler(self.cancel_admin, Text('Отмена'), state=self.admins_states)
+        dp.register_message_handler(self.cancel_admin, Text(dictionary.CANCEL), state=self.admins_states)
         self.register_action_objects(dp)
         self.register_action_subcategories(dp)
 

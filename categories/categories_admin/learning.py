@@ -60,7 +60,7 @@ class LearningAdmin(Learning):
 
         await state.set_state(self.admins_states.CreateURL)
 
-        await message.answer('Введите ссылку на видео')
+        await message.answer('Введите ссылку на видео или пропустите данный пункт')
 
     async def create_url_admin(self, message: types.Message, state: FSMContext):
         url = message.text if message.text != dictionary.SKIP else None
@@ -77,13 +77,13 @@ class LearningAdmin(Learning):
             return
 
         await message.answer(f'Название: {data["name"]}')
-
+        print(data)
         if data["video"] is not None:
             await message.answer_video(video=data["video"])
-        if data["url"] is None:
+        if data["url"] is not None:
             await message.answer(text=data["url"])
 
-        keyboard = keyboards_general.confirm_keyboard()
+        keyboard = keyboards_general.confirm_cancel_keyboard()
         await message.answer('Вы действительно хотите создать данное обучение?', reply_markup=keyboard)
 
     async def create_confirm_admin(self, message: types.Message, state: FSMContext):
@@ -107,5 +107,5 @@ class LearningAdmin(Learning):
                                     state=self.admins_states.CreateVideo)
         dp.register_message_handler(self.create_url_admin, content_types=ContentType.TEXT,
                                     state=self.admins_states.CreateURL)
-        dp.register_message_handler(self.create_confirm_admin, Text('Подтвердить'),
+        dp.register_message_handler(self.create_confirm_admin, Text(dictionary.CONFIRM),
                                     state=self.admins_states.CreateConfirm)

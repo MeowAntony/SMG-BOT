@@ -6,6 +6,14 @@ class CategoryStatesAdmin(StatesGroup):
     Chosen = State()
 
     CreateSubcategory = State()
+    CreateConfirm = State()
+
+    EditOldName = State()
+    EditNewName = State()
+    EditConfirm = State()
+
+    DeleteSubcategory = State()
+    DeleteConfirm = State()
 
 
 class ContactsStatesAdmin(CategoryStatesAdmin):
