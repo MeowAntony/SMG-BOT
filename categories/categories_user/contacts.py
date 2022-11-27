@@ -1,4 +1,4 @@
-from aiogram import types, Dispatcher
+from aiogram import types
 from aiogram.dispatcher import FSMContext
 
 from categories.categories import Contacts
@@ -17,11 +17,7 @@ class ContactsUser(Contacts):
         contacts = data_db['contacts']
 
         for contact in contacts:
-            fio = f'{contact["surname"]} {contact["name"]} {contact["patronymic"]}'
-
             await message.answer_photo(photo=contact['photo'],
-                                       caption=f'{fio}\n'
+                                       caption=f'{contact["fio"]}\n'
                                                f'{contact["job"]}\n'
                                                f'{contact["email"]}')
-
-

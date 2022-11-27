@@ -25,8 +25,13 @@ class ContactsStatesAdmin(CategoryStatesAdmin):
     CreatePhoto = State()
     CreateConfirm = State()
 
-    # EditDescription = State()
-    # EditConfirm = State()
+    EditSelectPerson = State()
+    EditFIO = State()
+    EditJob = State()
+    EditEmail = State()
+    EditPhoto = State()
+    EditConfirm = State()
+
 
 
 class FAQStatesAdmin(CategoryStatesAdmin):

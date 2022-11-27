@@ -11,9 +11,6 @@ class DataBaseManager:
 
         self.categories = self.db.categories
 
-    async def create_category(self, category: str):
-        await self.categories.insert_one({'category': category})
-
     async def check_category(self, category: str):
         return True if await self.categories.find_one({'category': category}) else False
 
@@ -55,6 +52,9 @@ class DataBaseManager:
     ###########################################################################################
     #########################################ADMIN#############################################
     ###########################################################################################
+    async def create_category(self, category: str):
+        await self.categories.insert_one({'category': category})
+
     async def create_subcategory(self, category, path, subcategory, data=None):
         path_str = ''
         for name in path:
@@ -95,3 +95,8 @@ class DataBaseManager:
             path_str += f'subcategories.{name}.'
         path_str += f'data.{key}'
         await self.categories.update_one({'category': category}, {'$push': {path_str: data}})
+
+    async def delete_in_data(self, category, path, key, ):
+        pass
+    async def edit_contact(self, category, path, surname, name, patronymic, data):
+        pass
