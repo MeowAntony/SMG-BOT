@@ -5,12 +5,11 @@ from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import Text
 from aiogram.types import MediaGroup, ContentType
 
+import config
 import dictionary
 from categories.categories import Templates
 from keyboards import keyboards_general
 from states.states_admin import TemplatesStatesAdmin
-
-MAX_DOCUMENTS = 10
 
 
 class TemplatesAdmin(Templates):
@@ -60,10 +59,8 @@ class TemplatesAdmin(Templates):
         await state.update_data(name=name)
         await state.set_state(self.admins_states.CreateDocument)
 
-        keyboard = keyboards_general.cancel_keyboard()
         await message.answer('Прикрепите документы (от 1 до 10 штук). \n'
-                             'Документы нужно прикреплять отдельными сообщениями',
-                             reply_markup=keyboard)
+                             'Документы нужно прикреплять отдельными сообщениями')
 
     async def create_document_admin(self, message: types.Message, state: FSMContext):
 
@@ -81,8 +78,8 @@ class TemplatesAdmin(Templates):
                 await message.answer('Введите текст или пропустите', reply_markup=keyboard)
                 return
 
-        if len(documents) == MAX_DOCUMENTS:
-            await message.answer(f'Уже добавлено максимальное количество документов ({MAX_DOCUMENTS}). \n'
+        if len(documents) == config.MAX_DOCUMENTS:
+            await message.answer(f'Уже добавлено максимальное количество документов ({config.MAX_DOCUMENTS}). \n'
                                  f'Используйте кнопку "{dictionary.CONTINUE}"')
             return
 
@@ -91,7 +88,7 @@ class TemplatesAdmin(Templates):
         await state.update_data(documents=documents)
 
         keyboard = keyboards_general.continue_cancel_keyboard()
-        await message.answer(f'Осталось свободных мест под документы: {MAX_DOCUMENTS - len(documents)}. \n'
+        await message.answer(f'Осталось свободных мест под документы: {config.MAX_DOCUMENTS - len(documents)}. \n'
                              f'Для перехода далее используйте кнопку "{dictionary.CONTINUE}"',
                              reply_markup=keyboard)
 

@@ -9,3 +9,5 @@ MONGO_DB_NAME = os.getenv('SMG_MONGO_DB_NAME')
 ADMINS = list(map(int, os.getenv('SMG_ADMINS').split(',')))
 
 MAIN_ADMIN = int(os.getenv('SMG_MAIN_ADMIN'))
+
+MAX_DOCUMENTS = 10

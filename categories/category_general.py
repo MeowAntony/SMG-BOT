@@ -3,7 +3,6 @@ from email.mime.text import MIMEText
 from aiogram.dispatcher import FSMContext
 
 from states.states_admin import CategoryStatesAdmin
-from states.states_user import CategoryStatesUser
 
 
 class Category:

@@ -1,8 +1,9 @@
 from aiogram import types, Dispatcher
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import Text
-from aiogram.types import ContentType
+from aiogram.types import ContentType, MediaGroup
 
+import config
 import dictionary
 from categories.categories import Regulations
 from keyboards import keyboards_general
@@ -15,14 +16,21 @@ class RegulationsAdmin(Regulations):
         self.admins_states = RegulationsStatesAdmin
 
     async def event_admin(self, message: types.Message, state: FSMContext):
-        path = await self.get_path(state)+ [message.text]
+        path = await self.get_path(state) + [message.text]
 
         if not (data_db := await self.smg_bot.db.get_data(self.name_button, path)):
             return
 
-        document = data_db['document']
+        documents = data_db['documents']
+        text = data_db['text']
 
-        await message.answer_document(document=document)
+        media_group = MediaGroup()
+        for document in documents:
+            media_group.attach_document(document)
+
+        await message.answer_media_group(media_group)
+        if text is not None:
+            await message.answer(text)
 
     async def create_object_admin(self, message: types.Message, state: FSMContext):
         path = await self.get_path(state)
@@ -48,19 +56,54 @@ class RegulationsAdmin(Regulations):
         await state.update_data(name=name)
         await state.set_state(self.admins_states.CreateDocument)
 
-        await message.answer('Прикрепите документ')
+        await message.answer('Прикрепите документы (от 1 до 10 штук). \n'
+                             'Документы нужно прикреплять отдельными сообщениями')
 
     async def create_document_admin(self, message: types.Message, state: FSMContext):
-        document = message.document.file_id
+        data = await state.get_data()
+        documents = data.get('documents', [])
 
-        await state.update_data(document=document)
+        if message.text == dictionary.CONTINUE:
+            if len(documents) == 0:
+                await message.answer('Нельзя продолжить. Вы не прикрепили ни одного документа')
+                return
+            else:
+                await state.set_state(self.admins_states.CreateText)
+                keyboard = keyboards_general.skip_cancel_keyboard()
 
+                await message.answer('Введите текст или пропустите', reply_markup=keyboard)
+                return
+
+        if len(documents) == config.MAX_DOCUMENTS:
+            await message.answer(f'Уже добавлено максимальное количество документов ({config.MAX_DOCUMENTS}). \n'
+                                 f'Используйте кнопку "{dictionary.CONTINUE}"')
+            return
+
+        documents.append(message.document.file_id)
+
+        await state.update_data(documents=documents)
+
+        keyboard = keyboards_general.continue_cancel_keyboard()
+        await message.answer(f'Осталось свободных мест под документы: {config.MAX_DOCUMENTS - len(documents)}. \n'
+                             f'Для перехода далее используйте кнопку "{dictionary.CONTINUE}"',
+                             reply_markup=keyboard)
+
+    async def create_text_admin(self, message: types.Message, state: FSMContext):
+        text = message.text if message.text != dictionary.SKIP else None
+
+        await state.update_data(text=text)
         await state.set_state(self.admins_states.CreateConfirm)
 
         data = await state.get_data()
 
         await message.answer(f'Название: {data["name"]}')
-        await message.answer_document(data['document'])
+
+        media_group = MediaGroup()
+        for document in data['documents']:
+            media_group.attach_document(document)
+
+        await message.answer_media_group(media_group)
+        await message.answer(text=data['text'])
 
         keyboard = keyboards_general.confirm_cancel_keyboard()
         await message.answer('Вы действительно хотите создать данный нормативный документ?', reply_markup=keyboard)
@@ -69,7 +112,7 @@ class RegulationsAdmin(Regulations):
         path = await self.get_path(state)
 
         data = await state.get_data()
-        data_db = {'document': data['document']}
+        data_db = {'documents': data['documents'], 'text': data['text']}
         await self.smg_bot.db.create_subcategory(self.name_button, path, data['name'], data_db)
 
         await message.answer('Успешно создан нормативный документ')
@@ -80,7 +123,11 @@ class RegulationsAdmin(Regulations):
 
         dp.register_message_handler(self.create_name_admin, content_types=ContentType.TEXT,
                                     state=self.admins_states.CreateName)
-        dp.register_message_handler(self.create_document_admin, content_types=ContentType.DOCUMENT,
+        dp.register_message_handler(self.create_document_admin, is_media_group=False,
+                                    content_types=ContentType.DOCUMENT, state=self.admins_states.CreateDocument)
+        dp.register_message_handler(self.create_document_admin, Text(dictionary.CONTINUE),
                                     state=self.admins_states.CreateDocument)
+        dp.register_message_handler(self.create_text_admin, content_types=ContentType.TEXT,
+                                    state=self.admins_states.CreateText)
         dp.register_message_handler(self.create_confirm_admin, Text(dictionary.CONFIRM),
                                     state=self.admins_states.CreateConfirm)

@@ -186,7 +186,7 @@ class AdminHandler:
             return
 
         await state.update_data(name=name)
-        await state.set_state(CategoryStatesAdmin.DeleteConfirm)
+        await state.set_state(CategoryStatesAdmin.DeleteSubcategoryConfirm)
 
         text = f'Название каталога: {name} '
         await message.answer(text)
@@ -246,7 +246,7 @@ class AdminHandler:
         dp.register_message_handler(self.delete_name_subcategory_admin, content_types=ContentType.TEXT,
                                     state=CategoryStatesAdmin.DeleteSubcategory)
         dp.register_message_handler(self.delete_confirm_subcategory_admin, Text(dictionary.CONFIRM),
-                                    state=CategoryStatesAdmin.DeleteConfirm)
+                                    state=CategoryStatesAdmin.DeleteSubcategoryConfirm)
 
         for category in self._categories.values():
             category.register_admin_events(dp)

@@ -33,8 +33,8 @@ def regulations_answer(is_not_actually=True):
 def faq_answer(is_not_ask=True):
     keyboard = ReplyKeyboardMarkup(resize_keyboard=True)
     keyboard.add(KeyboardButton(dictionary.MAIN_MENU))
-    keyboard.add(KeyboardButton('Выбрать другой'))
+    keyboard.add(KeyboardButton('Выбрать другой вопрос'))
     if is_not_ask:
-        keyboard.add(KeyboardButton('Не удовлетворён'))
+        keyboard.add(KeyboardButton('Ответ не удовлетворил'))
 
     return keyboard

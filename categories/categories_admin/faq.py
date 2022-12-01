@@ -55,7 +55,7 @@ class FAQAdmin(FAQ):
 
         await state.update_data(answer=answer)
 
-        await state.set_state(self.admins_states.CreateConfirm) # TODO сделать, чтобы можно было переходить
+        await state.set_state(self.admins_states.CreateConfirm)
 
         data = await state.get_data()
 

@@ -96,7 +96,35 @@ class DataBaseManager:
         path_str += f'data.{key}'
         await self.categories.update_one({'category': category}, {'$push': {path_str: data}})
 
-    async def delete_in_data(self, category, path, key, ):
-        pass
-    async def edit_contact(self, category, path, surname, name, patronymic, data):
-        pass
+    async def edit_contact(self, category, path, fio_old, data):
+        path_str = ''
+        for name in path:
+            path_str += f'subcategories.{name}.'
+        path_str += f'data.contacts'
+
+        self.categories.update_one({'category': category, f'{path_str}.fio': fio_old}, {"$set": {
+            f"{path_str}.$.fio": data['fio'],
+            f"{path_str}.$.job": data['job'],
+            f"{path_str}.$.email": data['email'],
+            f"{path_str}.$.photo": data['photo'],
+        }})
+
+    async def delete_contact(self, category, path, fio):
+        path_str = ''
+        for name in path:
+            path_str += f'subcategories.{name}.'
+        path_str += f'data.contacts'
+
+        self.categories.update_one({'category': category,}, {"$pull": {
+            path_str: {'fio': fio}
+        }})
+
+        data = await self.get_data(category, path)
+        contacts = data.get('contacts', [])
+
+        if not contacts:
+            self.categories.update_one({'category': category, }, {"$unset": {
+                path_str: 1
+            }})
+
+

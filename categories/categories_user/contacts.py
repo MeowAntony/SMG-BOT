@@ -14,7 +14,7 @@ class ContactsUser(Contacts):
         if not (data_db := await self.smg_bot.db.get_data(self.name_button, path)):
             return
 
-        contacts = data_db['contacts']
+        contacts = data_db.get('contacts', [])
 
         for contact in contacts:
             await message.answer_photo(photo=contact['photo'],

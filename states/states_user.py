@@ -17,7 +17,8 @@ class FAQStatesUser(CategoryStatesUser):
     Chosen = State()
 
     QuestionSelected = State()
-
+    QuestionGet = State()
+    QuestionSendConfirm = State()
 
 class LearningStatesUser(CategoryStatesUser):
     Chosen = State()

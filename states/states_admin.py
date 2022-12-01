@@ -13,7 +13,7 @@ class CategoryStatesAdmin(StatesGroup):
     EditConfirm = State()
 
     DeleteSubcategory = State()
-    DeleteConfirm = State()
+    DeleteSubcategoryConfirm = State()
 
 
 class ContactsStatesAdmin(CategoryStatesAdmin):
@@ -32,7 +32,8 @@ class ContactsStatesAdmin(CategoryStatesAdmin):
     EditPhoto = State()
     EditConfirm = State()
 
-
+    DeleteSelectPerson = State()
+    DeleteConfirm = State()
 
 class FAQStatesAdmin(CategoryStatesAdmin):
     Chosen = State()
@@ -68,6 +69,7 @@ class RegulationsStatesAdmin(CategoryStatesAdmin):
 
     CreateName = State()
     CreateDocument = State()
+    CreateText = State()
     CreateConfirm = State()
 
 
